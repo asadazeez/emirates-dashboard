@@ -1,7 +1,6 @@
 import { productByCategoryApi } from "@/api/productByCategoryApi";
-import ECommerce from "@/app/admin/dashboard/page";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
-import { storageUrl } from "@/utilis/baseUrl";
+import { storageUrl } from "@/utils/baseUrl";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -17,7 +16,7 @@ const ProductPage = async ({ params }: { params: { category: string } }) => {
 
   return (
     <DefaultLayout>
-      {shopData.length >0 ? (
+      {shopData.length > 0 ? (
         <div className="flex flex-col items-center rounded-2xl bg-white p-10 pt-20 dark:bg-dark">
           <div className="text-global-font-h5 font-bold">
             {data.categoryname} Products
@@ -48,15 +47,9 @@ const ProductPage = async ({ params }: { params: { category: string } }) => {
           </div>
         </div>
       ) : (
-        
-<h2 className="flex justify-center font-bold text-center">THERE IS NO PRODUCT IN THIS CATEGORY</h2>
-
-
-
-
-
-
-        
+        <h2 className="flex justify-center text-center font-bold">
+          THERE IS NO PRODUCT IN THIS CATEGORY
+        </h2>
       )}
     </DefaultLayout>
   );

@@ -11,6 +11,7 @@ import { serialize } from "object-to-formdata";
 import FileUploaderSingle from "@/components/FormElements/FileUpload/fileUploaderSingle";
 import Typography from '@mui/material/Typography'
 import DropzoneWrapper from "@/components/styles/react-dropzone";
+import Select from "@/components/FormElements/SelectGroup/SelectSize";
 
 type Props = {
   ProductId: any;
@@ -20,33 +21,56 @@ type Props = {
   subCategory: any;
 };
 
+const frameSize = [
+  { name: "XS", value: "XS" },
+  { name: "S", value: "S" },
+  { name: "M", value: "M" },
+  { name: "L", value: "L" },
+  { name: "XL", value: "XL" },
+];
+const colors = [
+  { name: "Red", value: "#FF5733" },
+  { name: "Green", value: "#33FF57" },
+  { name: "Blue", value: "#3357FF" },
+  { name: "Yellow", value: "#FFFF33" },
+  { name: "Magenta", value: "#FF33FF" },
+  { name: "Cyan", value: "#33FFFF" },
+  { name: "White", value: "#FFFFFF" },
+  { name: "Black", value: "#000000" },
+  { name: "Orange", value: "#FFA500" },
+  { name: "Purple", value: "#800080" },
+];
+
+
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const Schema = z
-  .object({
-    name: z
-    .string().trim().min(1, {message:'Minimum one character required'}).nonempty({message:"*Required"}),
-      description:z.string(),
-      imageFile: z.union([
-        z
-          .any()
-          .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-          .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            "Only .jpg, .jpeg, .png and .webp formats are supported.",
-          ),
-        z.string(),
-      ]),
-      category:z.string().nonempty({message:"*Required"}),
-      subCategory:z.string().nonempty({message:"*Required"}),
-      brand:z.string().nonempty({message:"*Required"}),
-    price: z.coerce.number().positive({ message: "*Required" }),
-          offerPrice: z.string()
-
-
-  
-      })    ;
+const Schema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, { message: "Minimum one character required" })
+    .nonempty({ message: "*Required" }),
+  description: z.string(),
+  imageFile: z.union([
+    z
+      .any()
+      .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+      .refine(
+        (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported.",
+      ),
+    z.string(),
+  ]),
+  category: z.string().nonempty({ message: "*Required" }),
+  subCategory: z.string().nonempty({ message: "*Required" }),
+  brand: z.string().nonempty({ message: "*Required" }),
+  color: z.string().nonempty({ message: "*Required" }),
+  size: z.string().nonempty({ message: "*Required" }),
+    stock: z.coerce.number().positive({ message: "*Required" }),
+  price: z.coerce.number().positive({ message: "*Required" }),
+  offerPrice: z.union([z.number(), z.null()]),
+});    ;
  type TSchema = z.infer<typeof Schema>;
 const ProductUpdateForm = ({
   ProductId,
@@ -56,7 +80,7 @@ const ProductUpdateForm = ({
   subCategory,
 }: Props) => {
   const router = useRouter();
-
+console.log("product",product)
   const {
     register,
     handleSubmit,
@@ -74,6 +98,9 @@ const ProductUpdateForm = ({
       category: product.category,
       subCategory:product.subCategory,
       imageFile: product.image,
+      color: product.color,
+      size: product.size,
+      stock:product.stock
     },
   });
   const submitData = async (data: any) => {
@@ -166,6 +193,44 @@ const ProductUpdateForm = ({
                   <p className="text-xs text-red-700">
                     {errors.offerPrice?.message}
                   </p>
+                </div>
+                <div className="flex gap-4">
+                  <div className=" w-1/2">
+                    <Select
+                      name={"COLOR"}
+                      data={colors}
+                      register={register("color")}
+                      placeHolder={"Color"}
+                    />
+                    <p className="-mt-4 text-xs text-red-700">
+                      {errors.color?.message}
+                    </p>
+                  </div>
+                  <div className=" w-1/2">
+                    <Select
+                      name={"FRAME SIZE"}
+                      data={frameSize}
+                      register={register("size")}
+                      placeHolder={"Frame Size"}
+                    />
+                    <p className="-mt-4 text-xs text-red-700">
+                      {errors.size?.message}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="mb-3 block text-body-sm font-medium text-dark dark:text-white">
+                      STOCK
+                    </label>
+                    <input
+                      {...register("stock")}
+                      type="number"
+                      placeholder="Stock"
+                      className="w-full rounded-[7px] border-[1.5px] border-stroke bg-transparent px-5.5 py-3 text-dark outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+                    />
+                    <p className="text-xs text-red-700">
+                      {errors.stock?.message}
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <SelectOne

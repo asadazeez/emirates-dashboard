@@ -67,6 +67,9 @@
                  Category
                </th>
                <th className="min-w-[120px] px-4 py-4 font-medium text-dark dark:text-white">
+                 Sub-Category
+               </th>
+               <th className="min-w-[120px] px-4 py-4 font-medium text-dark dark:text-white">
                  Offer Product
                </th>
                <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
@@ -93,10 +96,16 @@
                          {productItem.name}
                        </h5>
                        <p className=" text-body-sm font-medium">
-                         ₹
-                         {productItem.offerPrice
-                           ? productItem.offerPrice
-                           : productItem.price}
+                         {productItem.offerPrice ? (
+                           <span>
+                             <span className="line-through">
+                               ₹ {productItem.price}
+                             </span>{" "}
+                             ₹ {productItem.offerPrice}{" "}
+                           </span>
+                         ) : (
+                           <span>₹ {productItem.price}</span>
+                         )}
                        </p>
                      </div>
                    </div>
@@ -113,6 +122,13 @@
                  >
                    <p className="text-dark dark:text-white">
                      {productItem.category}
+                   </p>
+                 </td>
+                 <td
+                   className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === productList.length - 1 ? "border-b-0" : "border-b"}`}
+                 >
+                   <p className="text-dark dark:text-white">
+                     {productItem.subCategory}
                    </p>
                  </td>
 

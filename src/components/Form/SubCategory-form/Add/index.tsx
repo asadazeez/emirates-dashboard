@@ -26,6 +26,13 @@ const Schema = z
       .refine(
         (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
         "Only .jpg, .jpeg, .png and .webp formats are supported."
+      ),
+      iconFile: z
+      .any()
+      .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+      .refine(
+        (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported."
       )
 
   
@@ -108,7 +115,7 @@ toast.success(response.data.message)
              
               <DropzoneWrapper>
                   <Typography variant='h6' sx={{ mb: 2.5 }}>
-                    Image:
+                    Banner Image:
                     {!!errors.imageFile && (
                       <span style={{ color: 'red', fontSize: '14px',marginLeft:'2px' }}>Invalid Image format  or Image is Required  {!!errors.imageFile}</span>
                     )}
@@ -125,6 +132,25 @@ toast.success(response.data.message)
                   />
                 </DropzoneWrapper>
                 <p className="text-red-700 text-xs">{errors.imageFile?.message?.toString()}</p>
+              <DropzoneWrapper>
+                  <Typography variant='h6' sx={{ mb: 2.5 }}>
+                    Icon Image:
+                    {!!errors.iconFile && (
+                      <span style={{ color: 'red', fontSize: '14px',marginLeft:'2px' }}>Invalid Image format  or Image is Required  {!!errors.iconFile}</span>
+                    )}
+                  </Typography>
+                  <Controller
+                    name='iconFile'
+                    control={control}
+                    defaultValue=''
+                    render={({ field }) => (
+                      <div>
+                        <FileUploaderSingle file={field.value} setFile={field.onChange} error={errors.iconFile} />
+                      </div>
+                    )}
+                  />
+                </DropzoneWrapper>
+                <p className="text-red-700 text-xs">{errors.iconFile?.message?.toString()}</p>
 <div className="flex gap-2">
               <button type="submit" className=" bg-black dark:bg-white dark:text-black text-white rounded-md py-1 font-semibold w-fit px-6" > SUBMIT</button>
               <button type="reset"   onClick={() => reset()} className=" bg-black dark:bg-white dark:text-black text-white rounded-md py-1 font-semibold w-fit px-[30px]" > RESET</button></div>
